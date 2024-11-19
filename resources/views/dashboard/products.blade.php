@@ -10,6 +10,7 @@
         <thead>
             <tr>
                 <th>Title</th>
+                <th>Image</th>
                 <th>Description</th>
                 <th>Price</th>
                 <th>Category</th>
@@ -20,6 +21,7 @@
             @foreach ($games as $game)
                 <tr>
                     <td>{{ $game->title }}</td>
+                    <td><img src="{{ asset('storage/' . $game->image) }}" width="100"></td>
                     <td>{{ $game->description }}</td>
                     <td>{{ $game->price }}</td>
                     <td>{{ $game->category }}</td>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -22,12 +23,21 @@ class ProductController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'image' => 'required|image',
             'description' => 'required',
             'price' => 'required|numeric',
             'category' => 'required',
         ]);
 
-        Game::create($request->all());
+        $imagePath = $request->file('image')->store('images', 'public');
+
+        Game::create([
+            'title' => $request->title,
+            'image' => $imagePath,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+        ]);
 
         return redirect()->route('products.index');
     }
@@ -46,12 +56,25 @@ class ProductController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'image' => 'image',
             'description' => 'required',
             'price' => 'required|numeric',
             'category' => 'required',
         ]);
 
-        $game->update($request->all());
+        if ($request->hasFile('image')) {
+            $request->validate(['image' => 'image']);
+            $imagePath = $request->file('image')->store('images', 'public');
+            $game->image = $imagePath;
+        }
+
+        $game->update([
+            'title' => $request->title,
+            'image' => $game->image,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category' => $request->category,
+        ]);
 
         return redirect()->route('products.index');
     }
